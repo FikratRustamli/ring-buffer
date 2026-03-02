@@ -1,0 +1,41 @@
+@startuml
+class RingBuffer<E> {
+  - capacity : int
+  - slots : Slot<E>[]
+  - publishedSeq : long
+  + RingBuffer(capacity:int)
+  + write(item:E) : void
+  + createReader() : RingBufferReader<E>
+}
+
+class RingBufferReader<E> {
+  - buffer : RingBuffer<E>
+  - id : String
+  - nextSeq : long
+  + read() : ReadResult<E>
+  + id() : String
+  + position() : long
+}
+
+class Slot<E> {
+  - seq : long
+  - value : E
+}
+
+class ReadResult<E> {
+  + status() : Status
+  + item() : Optional<E>
+  + missedCount() : long
+}
+
+enum Status {
+  OK
+  EMPTY
+  MISSED
+}
+
+RingBuffer "1" o-- "N" Slot
+RingBuffer "1" o-- "N" RingBufferReader
+RingBufferReader --> RingBuffer
+ReadResult --> Status
+@enduml

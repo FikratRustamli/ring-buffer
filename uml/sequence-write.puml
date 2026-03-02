@@ -1,0 +1,17 @@
+@startuml
+actor Writer
+participant "RingBuffer<E>" as RB
+participant "Slot<E>" as S
+
+Writer -> RB : write(item)
+activate RB
+RB -> RB : nextSeq = publishedSeq + 1
+RB -> RB : idx = nextSeq % capacity
+RB -> S : slot = slots[idx]
+activate S
+RB -> S : value = item
+RB -> S : seq = nextSeq
+deactivate S
+RB -> RB : publishedSeq = nextSeq
+deactivate RB
+@enduml

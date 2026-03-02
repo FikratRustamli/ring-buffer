@@ -1,0 +1,35 @@
+@startuml
+actor Reader
+participant "RingBufferReader<E>" as R
+participant "RingBuffer<E>" as RB
+participant "Slot<E>" as S
+
+Reader -> R : read()
+activate R
+R -> RB : publishedSeq()
+RB --> R : pub
+
+alt pub < 0 OR nextSeq > pub
+  R --> Reader : EMPTY
+else
+  R -> RB : minAvailableSeq()
+  RB --> R : minAvail
+
+  alt nextSeq < minAvail (slow reader)
+    R -> R : missed = minAvail - nextSeq\nnextSeq = minAvail
+  end
+
+  R -> RB : slotAt(nextSeq)
+  RB -> S : return slot
+  R -> S : check slot.seq == nextSeq
+
+  alt match
+    R -> S : get value
+    R -> R : nextSeq++
+    R --> Reader : OK(value) or MISSED(missed,value)
+  else mismatch
+    R --> Reader : EMPTY (retry)
+  end
+end
+deactivate R
+@enduml
