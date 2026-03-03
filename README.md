@@ -9,23 +9,23 @@ This project implements a fixed-capacity ring buffer that supports:
 Reading by one reader does not remove items for other readers.
 
 ## Design (Responsibilities)
- **RingBuffer<E>**
+ **RingBuffer<E>** :
    Owns the fixed-capacity storage (`Slot[]`)
    Publishes items using a monotonically increasing sequence number
    Creates independent readers via `createReader()`
 
- **RingBufferReader<E>**
+ **RingBufferReader<E>** :
    Holds per-reader cursor (`nextSeq`)
    Reads independently without affecting other readers
    Detects overwrite and returns `MISSED`
 
- **Slot<E>**
+ **Slot<E>** :
    One cell holding `(value, seq)` for overwrite-safe validation
 
- **ReadResult<E>**
+ **ReadResult<E>** :
    Encapsulates read outcome: `OK`, `EMPTY`, `MISSED`
 
-## UML
+## UML 
 Diagrams are provided as PlantUML files under the `uml/` folder:
  `uml/class-diagram.puml`
  `uml/sequence-write.puml`
