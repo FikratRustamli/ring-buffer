@@ -10,13 +10,13 @@ Reading by one reader does not remove items for other readers.
 
 ## Design (Responsibilities)
  **RingBuffer<E>** :
-   Owns the fixed-capacity storage (`Slot[]`)
-   Publishes items using a monotonically increasing sequence number
+   Owns the fixed-capacity storage (`Slot[]`),
+   Publishes items using a monotonically increasing sequence number,
    Creates independent readers via `createReader()`
 
  **RingBufferReader<E>** :
-   Holds per-reader cursor (`nextSeq`)
-   Reads independently without affecting other readers
+   Holds per-reader cursor (`nextSeq`),
+   Reads independently without affecting other readers,
    Detects overwrite and returns `MISSED`
 
  **Slot<E>** :
